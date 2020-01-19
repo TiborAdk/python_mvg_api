@@ -156,9 +156,7 @@ def get_id_for_station(station_name):
 def get_locations(query):
     """Returns all matches from the search for the given query string.
 
-    `query` can either be a name of a station or of a street, square, etc.
-        supports:   old_style int ids as int or str and
-                    new_style string ids
+    `query` can either be a name/ id of a station or name of a street, square, etc.
 
     Returns a list wich looks somewhat like this::
 
@@ -188,15 +186,13 @@ def get_locations(query):
         ]
 
     """
-    try:
-        query = _convert_id(int(query))  # converts station old_style id to new_style id
-    except ValueError:  # happens if it is a name or new_style id
-        if _station_sanity_check(query):  # new_style string id
-            url = query_url_id.format(id=query)
-        else:
-            url = query_url_name.format(name=query)  # station or street name
-    else:  # happens if it is a station id
-        url = query_url_id.format(id=str(query))
+    if not isinstance(query, str):
+        raise ValueError("Query must be either 'new style' string id \
+                                 or the name of a station, street, etc.")
+    elif _station_sanity_check(query):
+        url = query_url_id.format(id=query)
+    else:
+        url = query_url_name.format(name=query)
 
     results = _perform_api_request(url)
     return results["locations"]
