@@ -157,6 +157,7 @@ def get_locations(query):
     """Returns all matches from the search for the given query string.
 
     `query` can either be a name of a station or of a street, square, etc.
+            supports 'old style' int ids and 'new style' string ids
 
     Returns a list wich looks somewhat like this::
 
