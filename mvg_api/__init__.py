@@ -188,8 +188,11 @@ def get_locations(query):
     """
     try:
         query = _convert_id(int(query))  # converts station old_style id to new_style id
-    except ValueError:  # happens if it is a station name
-        url = query_url_name.format(name=query)
+    except ValueError:  # happens if it is a name or new_style id
+        if _station_sanity_check(query):  # new_style string id
+            url = query_url_id.format(id=query)
+        else:
+            url = query_url_name.format(name=query)  # station or street name
     else:  # happens if it is a station id
         url = query_url_id.format(id=str(query))
 
