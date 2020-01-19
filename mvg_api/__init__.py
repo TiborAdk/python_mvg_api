@@ -186,12 +186,16 @@ def get_locations(query):
         ]
 
     """
-    try:
-        query = int(query)  # converts station ids to int
-    except(ValueError):  # happens if it is a station name
+    if isinstance(query, int):  # old_style id
+        url = query_url_id.format(id=_convert_id(query))
+    elif _station_sanity_check(query):  # new_style id
+        url = query_url_id.format(id=query)
+    elif isinstance(query, str):  # station or street name
         url = query_url_name.format(name=query)
-    else:  # happens if it is a station id
-        url = query_url_id.format(id=str(query))
+    else:
+        raise ValueError("Query must be either int station id,\
+                         'new style' string id \
+                         or the name of a street, station, etc.")
 
     results = _perform_api_request(url)
     return results["locations"]
