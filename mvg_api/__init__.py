@@ -359,6 +359,9 @@ class Station:
     """
 
     def __init__(self, station):
+        if isinstance(station, int):  # converting old_style int id to new_style string id
+            station = _convert_id(station)
+
         matching_stations = get_stations(station)
         if matching_stations == []:
             raise NameError("No matching station found")
